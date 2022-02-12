@@ -1,7 +1,8 @@
 # socket-io-demo
 
-A socket.io demo to explore the technology.
+![socket.io](https://img.shields.io/badge/-Socket.io-010101?logo=socket.io)
 
-- localhost connection, set a unique username and join the chat.
+A demo to explore the technology.
 
-[check it out](https://sjf-socketio.herokuapp.com/)
+1. Set a unique username
+2. [Join the chat!](https://sjf-socketio.herokuapp.com/)

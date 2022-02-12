@@ -8,7 +8,7 @@ body {
   display: flex;
 }
 #chat-info p {
-  margin-right: 1em;
+  margin: 0 1em 0 0;
 }
 
 .hide {
@@ -66,4 +66,8 @@ body {
 
 #status {
   color: red;
+}
+
+#username {
+  display: flex;
 }
