@@ -1,32 +1,37 @@
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <title>socket-io-demo</title>
-  </head>
-  <title>Socket.IO chat</title>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <title>socket-io-demo</title>
 </head>
+<title>Socket.IO chat</title>
+</head>
+
 <body>
-  <form id="username-form">
-    <label for="username" >username: </label>
-    <input id="username" autocomplete="off" />
+  <p id="my-username"></p>
+  <form id="username">
+    <input autocomplete="off" />
+    <button type="submit" disabled>set username</button>
   </form>
   <div id="chat-info">
     <p><span id="connection-count"></span> users online</p>
   </div>
-<div id="message-wrapper">
-  <ul id="messages"></ul>
-</div>
-
-  <form id="form" action="">
-    <label for="input" >message</label>
-    <input id="input" autocomplete="off" disabled/>
-    <button>Send</button>
-  </form>
+  <main>
+    <div id="message-wrapper">
+      <ul id="messages"></ul>
+    </div>
+    <form id="message" action="">
+      <label>message</label>
+      <input autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </main>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="assets/js/index.js"></script>
 </body>
+
 </html>

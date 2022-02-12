@@ -17,40 +17,41 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-let connectionCount = 0;
+const connections = { length: 0 };
 // when a client connects to the socket
 io.on("connection", (socket) => {
-  connectionCount++;
+  connections[socket.id] = { id: socket.id };
+  connections.length++;
   // send a 'client connected' event to all connected clients
-  io.emit("client connected", { connectionCount });
+  io.emit("connected", { connections });
   console.log("a client connected");
 
   // when a client disconnects from the socket
   socket.on("disconnect", () => {
-    connectionCount--;
+    connections.length--;
     // send a 'client disconnected' event to all connected clients
-    io.emit("client disconnected", { connectionCount });
-    console.log("client disconnected");
+    io.emit("disconnected", { connections });
+    console.log("disconnected");
   });
 
-  socket.on("client typing", (data) => {
+  socket.on("typing", (data) => {
     // one client broadcasts data to all OTHER clients
-    socket.broadcast.emit("client typing", data);
+    socket.broadcast.emit("typing", data);
   });
 
-  socket.on("client typing cancelled", (data) => {
+  socket.on("typing cancelled", (data) => {
     // one client broadcasts data to all OTHER clients
-    socket.broadcast.emit("client typing cancelled", data);
+    socket.broadcast.emit("typing cancelled", data);
   });
 
   // when a client broadcasts a 'client sent message' event
-  socket.on("client sent message", (data) => {
+  socket.on("sent message", (data) => {
     console.log(data);
     // one client broadcasts data to all OTHER clients
-    socket.broadcast.emit("client sent message", data);
+    socket.broadcast.emit("sent message", data);
 
     // broadcast data to ALL connected clients
-    // io.emit("client sent message", data);
+    // io.emit("sent message", data);
     console.log("data", data);
   });
 });
