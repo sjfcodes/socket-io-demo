@@ -18,20 +18,27 @@ app.get("/", (req, res) => {
 });
 
 const connections = { length: 0 };
+const addConnection = (id) => {
+  connections.length++;
+  connections[id] = { id, username: "" };
+};
+const deleteConnection = (id) => {
+  connections.length--;
+  delete connections[id];
+  console.log(connections);
+};
+
 // when a client connects to the socket
 io.on("connection", (socket) => {
-  connections[socket.id] = { id: socket.id };
-  connections.length++;
+  addConnection(socket.id);
   // send a 'client connected' event to all connected clients
   io.emit("connected", { connections });
-  console.log("a client connected");
 
   // when a client disconnects from the socket
   socket.on("disconnect", () => {
-    connections.length--;
+    deleteConnection(socket.id);
     // send a 'client disconnected' event to all connected clients
     io.emit("disconnected", { connections });
-    console.log("disconnected");
   });
 
   socket.on("typing", (data) => {
@@ -46,13 +53,16 @@ io.on("connection", (socket) => {
 
   // when a client broadcasts a 'client sent message' event
   socket.on("sent message", (data) => {
-    console.log(data);
     // one client broadcasts data to all OTHER clients
     socket.broadcast.emit("sent message", data);
 
     // broadcast data to ALL connected clients
     // io.emit("sent message", data);
-    console.log("data", data);
+  });
+
+  socket.on("set username", ({ id, username }) => {
+    connections[id].username = username;
+    socket.broadcast.emit("set username", { connections });
   });
 });
 

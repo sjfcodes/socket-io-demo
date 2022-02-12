@@ -1,5 +1,6 @@
 const usernameFormEl = document.querySelector("#username");
 const usernameInputEl = document.querySelector("#username input");
+const usernameSubmitBtn = document.querySelector("#username button");
 const connectionCountEl = document.getElementById("connection-count");
 const chatInfoEl = document.getElementById("chat-info");
 const messagesUlEl = document.getElementById("messages");
@@ -11,16 +12,18 @@ const socket = io();
 
 let isTyping = false;
 let timeout = undefined;
-let liveConnections;
+let existingConnections;
+const setConnections = (connections) => {
+  existingConnections = { ...connections };
+  console.log(existingConnections);
+};
+const setConnectionCount = (count) => (connectionCountEl.innerText = count);
 
 // OUTGOING connection
 const onConnect = () => {
   // connectionCountEl.innerText = "online";
   // connectionCountEl.style.color = "green";
 };
-
-// OUTGOING set username
-const onSetUsername = () => {};
 
 // OUTGOING typing events
 const handleMessageKeydown = ({ key }) => {
@@ -45,7 +48,7 @@ const handleMessageSend = (e) => {
   const message = messageInputEl.value;
   if (!message) return;
 
-  socket.emit("client sent message", {
+  socket.emit("sent message", {
     message,
     username: usernameInputEl.value,
   });
@@ -56,7 +59,12 @@ const submitOutgoingMessage = (message) => {
   const liEl = document.createElement("li");
   liEl.style.textAlign = "right";
   liEl.textContent = `${message}`;
-  messagesEl.appUlendChild(liEl);
+  messagesUlEl.appendChild(liEl);
+};
+
+// INCOMING set username
+const onSetUsername = ({ connections }) => {
+  setConnections(connections);
 };
 
 // INCOMING typing events
@@ -79,14 +87,14 @@ const onClientTypingCancelled = ({ username }) => {
 };
 
 // INCOMING connect & disconnect events
-const setConnectionCount = (count) => (connectionCountEl.innerText = count);
 
 const onClientConnect = ({ connections }) => {
-  liveConnections = { ...connections };
+  setConnections(connections);
   setConnectionCount(connections.length);
-  console.log(liveConnections);
+  console.log(existingConnections);
 };
 const onClientDisconnect = ({ connections }) => {
+  setConnections(connections);
   setConnectionCount(connections.length);
 };
 
@@ -94,20 +102,43 @@ const onClientDisconnect = ({ connections }) => {
 const onIncomingMessage = ({ message, username }) => {
   const liEl = document.createElement("li");
   liEl.textContent = `${username}: ${message}`;
-  messagesEl.appUlendChild(liEl);
+  messagesUlEl.appendChild(liEl);
   window.scrollTo(0, document.body.scrollHeight);
 };
 
-// handle username
-const handleUsernameKeydown = ({ key }) => {
-  const username = usernameInputEl.value;
-  // if username is null, disable submit
-  // else if username is not unique, disable submit
-  // else enable button
-  console.log(socket);
+// handle username input
+const handleUsernameKeydown = ({ target: { value } }) => {
+  const disableSetUsernameBtn = () =>
+    usernameSubmitBtn.setAttribute("disabled", true);
+  const enableSetUsernameBtn = () =>
+    usernameSubmitBtn.removeAttribute("disabled");
+
+  const existingUsernames = Object.values(existingConnections).filter(
+    ({ username }) => username === value
+  );
+
+  // if username is null || too short || not unique
+  if (!value || value.length < 3 || existingUsernames.length) {
+    disableSetUsernameBtn();
+  } else {
+    enableSetUsernameBtn();
+  }
 };
+
+// handle set username
 const handleSetUsername = (e) => {
   e.preventDefault();
+  socket.emit("set username", {
+    id: socket.id,
+    username: usernameInputEl.value,
+  });
+
+  // show messenger
+  document.querySelector("main").classList.remove("hide");
+  // remove set username button
+  usernameFormEl.removeChild(usernameSubmitBtn);
+  // focuse text input
+  messageInputEl.focus();
 };
 
 socket.on("connect", onConnect);
@@ -119,7 +150,9 @@ socket.on("typing", onClientTyping);
 socket.on("typing cancelled", onClientTypingCancelled);
 
 usernameFormEl.addEventListener("submit", handleSetUsername);
-usernameInputEl.addEventListener("keydown", handleUsernameKeydown);
+usernameInputEl.addEventListener("input", handleUsernameKeydown);
 
 messageInputEl.addEventListener("keydown", handleMessageKeydown);
 messageFormEl.addEventListener("submit", handleMessageSend);
+
+usernameInputEl.focus();
