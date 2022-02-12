@@ -25,7 +25,6 @@ const addConnection = (id) => {
 const deleteConnection = (id) => {
   connections.length--;
   delete connections[id];
-  console.log(connections);
 };
 
 // when a client connects to the socket
@@ -67,5 +66,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log("listening on *:3000");
+  console.log(`listening on PORT: ${PORT}`);
 });

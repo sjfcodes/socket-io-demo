@@ -15,7 +15,6 @@ let timeout = undefined;
 let existingConnections;
 const setConnections = (connections) => {
   existingConnections = { ...connections };
-  console.log(existingConnections);
 };
 const setConnectionCount = (count) => {
   connectionCountEl.innerText = count;
@@ -94,7 +93,6 @@ const onClientTypingCancelled = ({ username }) => {
 const onClientConnect = ({ connections }) => {
   setConnections(connections);
   setConnectionCount(connections.length);
-  console.log(existingConnections);
 };
 const onClientDisconnect = ({ connections }) => {
   setConnections(connections);
