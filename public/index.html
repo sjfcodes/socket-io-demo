@@ -9,16 +9,20 @@
   <title>Socket.IO chat</title>
 </head>
 <body>
-  <form id="nickname-form">
-    <label for="nickname" >nickname</label>
-    <input id="nickname" autocomplete="off" />
+  <form id="username-form">
+    <label for="username" >username: </label>
+    <input id="username" autocomplete="off" />
   </form>
-
+  <div id="chat-info">
+    <p><span id="connection-count"></span> users online</p>
+  </div>
+<div id="message-wrapper">
   <ul id="messages"></ul>
+</div>
 
   <form id="form" action="">
     <label for="input" >message</label>
-    <input id="input" autocomplete="off" />
+    <input id="input" autocomplete="off" disabled/>
     <button>Send</button>
   </form>
 

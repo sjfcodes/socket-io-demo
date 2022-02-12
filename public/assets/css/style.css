@@ -1,8 +1,18 @@
 body {
   margin: 0;
-  padding-bottom: 3rem;
+  padding: 1rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
+}
+#chat-info {
+  display: flex;
+}
+#chat-info p {
+  margin-right: 1em;
+}
+
+#status {
+  color: red;
 }
 
 #form {
@@ -36,11 +46,14 @@ body {
   outline: none;
   color: #fff;
 }
+#message-wrapper {
+  height: 70vh;
+  border: solid black 1px;
+  overflow-x: scroll;
+}
 
 #messages {
   list-style-type: none;
-  margin: 0;
-  padding: 0;
 }
 #messages > li {
   padding: 0.5rem 1rem;
