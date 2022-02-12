@@ -17,7 +17,10 @@ const setConnections = (connections) => {
   existingConnections = { ...connections };
   console.log(existingConnections);
 };
-const setConnectionCount = (count) => (connectionCountEl.innerText = count);
+const setConnectionCount = (count) => {
+  connectionCountEl.innerText = count;
+  document.title = ` socket.io ~ ${count} active users `;
+};
 
 // OUTGOING connection
 const onConnect = () => {
