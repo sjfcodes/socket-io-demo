@@ -23,17 +23,20 @@ io.on("connection", (socket) => {
   io.emit("user connected", "a user connected");
   console.log("a user connected");
 
-  // when a user disconnects from the socket
+  // when a client disconnects from the socket
   socket.on("disconnect", () => {
     // send a 'user disconnected' event to all connected clients
     io.emit("user disconnected", "a user disconnected");
     console.log("user disconnected");
   });
 
-  // when a user broadcasts a 'chat message' event
+  // when a client broadcasts a 'chat message' event
   socket.on("chat message", (data) => {
-    // forward the msg to all connected clients
-    io.emit("chat message", data);
+    // one client broadcasts data to all OTHER clients
+    socket.broadcast.emit("chat message", data);
+
+    // broadcast data to ALL connected clients
+    // io.emit("chat message", data);
     console.log("data", data);
   });
 });

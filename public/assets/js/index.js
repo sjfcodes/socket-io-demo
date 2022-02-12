@@ -26,11 +26,19 @@ const onUserDisconnected = () => {
 
 const onFormSubmit = (e) => {
   e.preventDefault();
-  if (!inputEl.value) return;
+  const message = inputEl.value;
+  if (!message) return;
+
   socket.emit("chat message", {
-    message: inputEl.value,
+    message: message,
     nickname: nicknameEl.value,
   });
+
+  const liEl = document.createElement("li");
+  liEl.style.textAlign = "right";
+  liEl.textContent = `${message}`;
+  messagesEl.appendChild(liEl);
+
   inputEl.value = "";
 };
 
