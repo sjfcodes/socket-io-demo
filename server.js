@@ -17,17 +17,24 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
+// when a client connects to the socket
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  // send a 'user connected' event to all connected clients
   io.emit("user connected", "a user connected");
+  console.log("a user connected");
 
+  // when a user disconnects from the socket
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    // send a 'user disconnected' event to all connected clients
     io.emit("user disconnected", "a user disconnected");
+    console.log("user disconnected");
   });
 
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
+  // when a user broadcasts a 'chat message' event
+  socket.on("chat message", (data) => {
+    // forward the msg to all connected clients
+    io.emit("chat message", data);
+    console.log("data", data);
   });
 });
 
