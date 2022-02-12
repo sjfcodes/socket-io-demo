@@ -17,26 +17,40 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
+let connectionCount = 0;
 // when a client connects to the socket
 io.on("connection", (socket) => {
-  // send a 'user connected' event to all connected clients
-  io.emit("user connected", "a user connected");
-  console.log("a user connected");
+  connectionCount++;
+  // send a 'client connected' event to all connected clients
+  io.emit("client connected", { connectionCount });
+  console.log("a client connected");
 
   // when a client disconnects from the socket
   socket.on("disconnect", () => {
-    // send a 'user disconnected' event to all connected clients
-    io.emit("user disconnected", "a user disconnected");
-    console.log("user disconnected");
+    connectionCount--;
+    // send a 'client disconnected' event to all connected clients
+    io.emit("client disconnected", { connectionCount });
+    console.log("client disconnected");
   });
 
-  // when a client broadcasts a 'chat message' event
-  socket.on("chat message", (data) => {
+  socket.on("client typing", (data) => {
     // one client broadcasts data to all OTHER clients
-    socket.broadcast.emit("chat message", data);
+    socket.broadcast.emit("client typing", data);
+  });
+
+  socket.on("client typing cancelled", (data) => {
+    // one client broadcasts data to all OTHER clients
+    socket.broadcast.emit("client typing cancelled", data);
+  });
+
+  // when a client broadcasts a 'client sent message' event
+  socket.on("client sent message", (data) => {
+    console.log(data);
+    // one client broadcasts data to all OTHER clients
+    socket.broadcast.emit("client sent message", data);
 
     // broadcast data to ALL connected clients
-    // io.emit("chat message", data);
+    // io.emit("client sent message", data);
     console.log("data", data);
   });
 });
